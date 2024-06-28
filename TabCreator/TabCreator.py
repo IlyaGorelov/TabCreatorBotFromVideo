@@ -1,11 +1,8 @@
-import pytesseract
-import cv2
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox 
 from PIL import Image,ImageTk, ImageGrab
 import time
-import os
 
 ex_dir = ''
 x1=0
@@ -24,59 +21,29 @@ def screenshot_base():
 
 def take_screenshots():
     screenshot_base()
-    pytesseract.pytesseract.tesseract_cmd = dir_pytesseract_tf.get()
     print(path)
     time_before = int(timer_tf.get())
     while time_before:
         time.sleep(1)
         time_before-=1
-    time_between = int(interval_tf.get())
-    length = int(video_length_tf.get())+1
+    time_between = float(interval_tf.get())
+    length = float(video_length_tf.get())+1
+    print(length)
     index=0
-    textOld=''
-    textNew='1'
     window.title('Proccesing...')
-    while length:
-        if time_between==0:
-            if textOld!=textNew:
-                  index+=1
-                  i = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-                  i.save(f'{path}\\tab{index}.jpg')
-                  image = cv2.imread(f'{path}\\tab{index}.jpg')
-                  print('readed')
-                  if time_between!=0:
-                     time.sleep(time_between)
-                  else:
-                     textNew = pytesseract.image_to_string(image,config='--psm 13')
-                  textOld=textNew
-            else:
-                  time.sleep(0.5)
-                  i = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-                  i.save(f'{path}\\temp.jpg')
-                  image = cv2.imread(f'{path}\\temp.jpg')
-                  textNew = pytesseract.image_to_string(image,config='--psm 11')
-                  os.remove(f'{path}\\temp.jpg')
-        else:
-            index+=1
-            i = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-            i.save(f'{path}\\tab{index}.jpg')
-            image = cv2.imread(f'{path}\\tab{index}.jpg')
-            time.sleep(time_between)   
-        print(textNew)
-        length-=1
+    while length>0:
+         index+=1
+         i = ImageGrab.grab(bbox=(x1, y1, x2, y2))
+         i.save(f'{path}\\tab{index}.jpg')
+         time.sleep(time_between)   
+         length-=time_between
+         print(length)
     messagebox.showinfo('showInfo','Done')
     window.title('Done')
 def take_dir():
     text = filedialog.askdirectory()
     dir_tf.delete(0,END)
     dir_tf.insert(0,text)
-    return
-
-def take_file():
-    file = filedialog.askopenfile(mode='r',filetypes=[('exe file', '*.exe')])
-    path = os.path.abspath(file.name)
-    dir_pytesseract_tf.delete(0,END)
-    dir_pytesseract_tf.insert(0,path)
     return
 
 def take_screenshot():
@@ -139,18 +106,6 @@ dir_lb = Label(
 )
 dir_lb.grid(row=4, column=1)
 
-dir_pytesseract_lb = Label(
-   frame,
-   text="tesseract.exe directory",
-)
-dir_pytesseract_lb.grid(row=5, column=1)
-
-dir_pytesseract_btn = Button(
-   frame, #Заготовка с настроенными отступами.
-   text='Choose', #Надпись на кнопке.
-   command=take_file
-)
-dir_pytesseract_btn.grid(row=5, column=3)
 
 dir_btn = Button(
    frame, #Заготовка с настроенными отступами.
@@ -176,17 +131,11 @@ dir_tf = Entry(
 )
 dir_tf.grid(row=4, column=2)
 
-dir_pytesseract_tf = Entry(
-   frame,
-)
-dir_pytesseract_tf.grid(row=5, column=2)
-
-
 interval_tf = Entry(
    frame, #Используем нашу заготовку с настроенными отступами.
 )
 interval_tf.grid(row=6, column=2)
-interval_tf.insert(0,'0')
+interval_tf.insert(0,'1')
 
 video_length_lb = Label(
    frame, #Используем нашу заготовку с настроенными отступами.
@@ -219,8 +168,6 @@ take_one_btn = Button(
    command=take_screenshot
 )
 take_one_btn.grid(row=10, column=1)
-
-
 
 label_image = Label(frame)
 
