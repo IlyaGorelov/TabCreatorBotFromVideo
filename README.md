@@ -1,5 +1,5 @@
 # TabCreatorFromVideo
- If video has displayed tabs, then bot will take screenshots every time tab change
+ Take screenshots every time interval you choose
 ## How To Load
 1) Load zip archive from releases
 2) Start the exe file WITH ADMIN RIGHTS !!!
